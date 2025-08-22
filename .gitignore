@@ -6,12 +6,15 @@
 *.rootmap
 *.pcm
 
-# Outputs
-# /output/
-# /output/**
-# output/*
-# !output/.gitkeep
+# Ignore all output images
+output/*.png
+output/*.jpg
+output/*.jpeg
+output/*.gif
+# Add other image formats you use
 
+# But keep the directory structure
+!output/.gitkeep
 
 # Data (kept out of Git; fetched via script)
 data/*.root

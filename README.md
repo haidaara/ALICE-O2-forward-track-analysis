@@ -7,15 +7,17 @@ Computes efficiency and purity metrics from AO2D Monte Carlo data and produces v
 ## Setup
 ```bash
 git clone https://github.com/haidaara/ALICE-O2-forward-track-analysis.git
-cd O2FwdTrackAnalysis
 
 # download input ROOT file
 ./scripts/get_data.sh
 ````
 
 ## Usage
-
+'make sure path to the Project Root do not contain space'
 ```bash
+# make sure the scripts executable:
+chmod +x scripts/compile.sh scripts/run.sh
+
 ./scripts/compile.sh
 ./scripts/run.sh
 ```
