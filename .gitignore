@@ -9,6 +9,9 @@
 # Outputs
 /output/
 /output/**
+output/*
+!output/.gitkeep
+
 
 # Data (kept out of Git; fetched via script)
 data/*.root
