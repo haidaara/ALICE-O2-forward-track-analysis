@@ -1,12 +1,30 @@
 #!/bin/bash
-# Simple script to run the analysis
+# Script to run the analysis using pre-compiled shared libraries
 
 echo "Running analysis..."
 
+# Get the project root directory
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+echo "Project root: $PROJECT_ROOT"
+
 # Create output directories if they don't exist
-mkdir -p output/png_graph_class
+mkdir -p $PROJECT_ROOT/output/png_graph_class
 
-# Run the main macro from the project root directory
-root -l -b -q 'macros/O2fwdtrack.C+("")'
+# Run the analysis from the project root directory
+cd $PROJECT_ROOT
 
-echo "Analysis complete. Check the 'output/' directory for results."
+# Run the analysis using pre-compiled shared libraries
+root -l -b << 'EOF'
+// Load the pre-compiled shared libraries
+.L ./macros/O2fwdtrackHelpers_C.so
+.L ./macros/O2fwdtrackEfficiency_C.so
+.L ./macros/O2fwdtrackGraphing_C.so
+.L ./macros/O2fwdtrack_C.so
+
+// Create instance and run analysis
+O2fwdtrack fwd;
+fwd.Loop();
+
+.q
+EOF
+
