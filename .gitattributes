@@ -1,0 +1,8 @@
+# Reclassify ROOT macros as C++
+*.C linguist-language=C++
+*.h linguist-language=C++
+
+# Don’t count docs and scripts in language stats
+docs/* linguist-documentation
+scripts/* linguist-vendored
+output/* linguist-generated
