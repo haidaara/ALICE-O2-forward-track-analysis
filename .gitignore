@@ -1,0 +1,20 @@
+# ROOT build artefacts
+*_C.so
+*_C.d
+*_C_ACLiC_dict.*
+*_rdict.pcm
+*.rootmap
+*.pcm
+
+# Outputs
+/output/
+/output/**
+
+# Data (kept out of Git; fetched via script)
+data/*.root
+!data/README.md
+
+# OS/editor noise
+*.Zone.Identifier
+.DS_Store
+.vscode/
