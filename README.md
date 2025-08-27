@@ -5,6 +5,7 @@ Computes efficiency and purity metrics from AO2D Monte Carlo data and produces v
 
 
 ## Setup
+run these command on your bash 
 ```bash
 git clone https://github.com/haidaara/ALICE-O2-forward-track-analysis.git
 
