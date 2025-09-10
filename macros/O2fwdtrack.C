@@ -24,6 +24,8 @@ void O2fwdtrack::Loop(TFile *outputfile)
 {
     bool closeFile = false;
 
+
+
     TFile *outfile = outputManagement(outputfile, closeFile);
 
     std::vector<std::string> branches = {"fX", "fY", "fZ", "fPhi", "fTgl", "fSigned1Pt", "fChi2",
@@ -51,23 +53,26 @@ void O2fwdtrack::Loop(TFile *outputfile)
     gStyle->SetTitleSize(0.05, "XY");
     gStyle->SetPalette(kViridis); // colorblind-friendly
 
-    // initailize histograms:
-    initializeHistograms(branches, nbranches, ntype, trackTypes, hist);
 
-    // Enable batch mode to prevent temporary canvas display
-    bool originalBatchMode = gROOT->IsBatch();
-    gROOT->SetBatch(kTRUE);
+//drawing branch data
+       // initailize histograms:
+       initializeHistograms(branches, nbranches, ntype, trackTypes, hist);
 
-    // Fill histograms:
-    fillHistograms(nentries, nbytes, nb, branches, nbranches, ntype, trackTypes, hist);
+       // Enable batch mode to prevent temporary canvas display
+       bool originalBatchMode = gROOT->IsBatch();
+       gROOT->SetBatch(kTRUE);
 
-    // normalization
-    // normalizeHistograms(nbranches, ntype, hist);
+       // Fill histograms:
+       fillHistograms(nentries, nbytes, nb, branches, nbranches, ntype, trackTypes, hist);
 
-    // canvas manipulation
-    canvasManipulation(branches, nbranches, ntype, trackTypes, hist, outfile);
+       // normalization
+       // normalizeHistograms(nbranches, ntype, hist);
 
-    CalculateEfficiencyPurity(outfile);
+       // canvas manipulation
+       canvasManipulation(branches, nbranches, ntype, trackTypes, hist, outfile);
+
+//eff, purity calculation
+       CalculateEfficiencyPurity(outfile);
 
     // Restore original batch mode
     gROOT->SetBatch(originalBatchMode);
@@ -280,11 +285,15 @@ void O2fwdtrack::Init(TTree *tree)
       TDirectory *dir = currentFile->GetDirectory("DF_2397811916393856"); // Use actual dir pattern
    if (dir) dir->GetObject("O2mfttrack_001", fMFTTree);
    if (fMFTTree) {
-     fMFTTree->SetBranchAddress("fMFTClusterSizesAndTrackFlags", 
+      fMFTTree->SetBranchAddress("fMFTClusterSizesAndTrackFlags", 
                                &fMFTClusterSizesAndFlags);
+      fMFTTree->SetBranchAddress("fChi2", &fMFTTrackChi2);
+   
    }
 
    }
 }
+
+   
 
 #endif // #ifdef O2fwdtrack_cxx

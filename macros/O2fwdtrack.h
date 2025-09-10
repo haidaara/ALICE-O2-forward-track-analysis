@@ -22,6 +22,7 @@
 #include <TH2.h>          
 #include <TEfficiency.h>  
 #include "TError.h"  
+#include <unordered_map>
 
 
 // In O2fwdtrack.h, inside struct VarConfig:
@@ -57,12 +58,32 @@ struct EffPurityHists2D {
     
 };
 
+
+
+#ifndef O2FWDTRACK_MATCHCANDIDATE_H
+#define O2FWDTRACK_MATCHCANDIDATE_H
+
+#include <cstdint>
+
 struct MatchCandidate {
-    Long64_t entry;
-    double chi2;
-    UChar_t mcMask;
-    double eta;
+  Long64_t entry;
+  double   chi2;
+  UChar_t  mcMask;
+  double   eta;
+  Int_t    mftIndex;
+  UInt_t   mftClusters;
+
+  MatchCandidate()
+    : entry(-1), chi2(1e30), mcMask(255), eta(0.0), mftIndex(-1), mftClusters(0) {}
+
+
+  MatchCandidate(Long64_t e, double c, UChar_t m, double et, Int_t mi, UInt_t mc)
+    : entry(e), chi2(c), mcMask(m), eta(et), mftIndex(mi), mftClusters(mc) {}
 };
+
+
+#endif
+
 
 struct EffPurityHists {
     TH1D* hEffDen;
@@ -115,6 +136,7 @@ public :
    UInt_t          fMIDBoards;
    Float_t         fTrackTime;
    Float_t         fTrackTimeRes;
+   Float_t         fMFTTrackChi2; // MFT track chi2
 
    // List of branches
    TBranch        *b_fIndexCollisions;   //!
@@ -153,12 +175,17 @@ public :
 //==========================================================================================================================================
 //  Helper-function definitions for graphing and histogram management;
 // =========================================================================================================================
-void ReportAndOptimize(TFile* outfile, const std::vector<VarConfig>& vars, std::vector<EffPurityHists>& histSets,
+void ReportAndOptimize(
+    TFile* outfile,
+    const std::vector<VarConfig>& vars,
+    std::vector<EffPurityHists>& histSets,
     Long64_t nTotalType3,
-    Long64_t nMatchedType3,
-    Long64_t nTotalType0,
-    Long64_t nTrueType0,
-    TH1D* hChi2Optimization) ;
+    Long64_t nMatchedType3, 
+    Long64_t nTotalType0,   
+    Long64_t nTrueType0,    
+    TH1D* hChi2Optimization,
+    const std::unordered_map<Long64_t, std::vector<MatchCandidate>>& matchCandidates // ADDED
+);
 
 
 

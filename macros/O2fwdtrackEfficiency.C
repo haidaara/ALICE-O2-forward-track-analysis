@@ -31,23 +31,30 @@
 #include <TDirectory.h>
 #include <TROOT.h>
 #include <cmath>
+#include <limits>
 
 
-double O2fwdtrack::GetVarValue(const std::string &varname)
+
+double O2fwdtrack::GetVarValue(const std::string& varname)
 {
-    if (varname == "pt")
-        return 1. / std::abs(fSigned1Pt);
-    if (varname == "eta")
-        return std::asinh(fTgl);
-    if (varname == "chi2")
-        return fChi2;
-    if (varname == "nClusters")
-        return fNClusters;
-    if (varname == "phi")
-        return fPhi;
+    if (varname == "pt_MCH")      return 1.0 / std::abs(fSigned1Pt);
+    if (varname == "eta")         return std::asinh(fTgl);
+    if (varname == "phi")         return fPhi;
+    if (varname == "chi2_MCH")    return fChi2;                 // MCH tracking χ² (tree value)
+    if (varname == "chi2_match")  return fChi2MatchMCHMFT;      // matching χ²
 
-    return 0;
+    // MFT-dependent (only valid when we've fetched the MFT track for this entry)
+    if (varname == "chi2_MFT")    return fMFTTree ? fMFTTrackChi2 : -1.0;
+    if (varname == "nClusters_MCH") return static_cast<double>(fNClusters);
+    if (varname == "nClusters_MFT") {
+        if (!fMFTTree) return -1.0;
+        return static_cast<double>(getMFTClusterCount(fMFTClusterSizesAndFlags));
+    }
+
+    return 0.0;
 }
+
+
 
 // Check if the track is in the acceptance range
 
@@ -76,25 +83,29 @@ void O2fwdtrack::CalculateEfficiencyPurity(TFile *outfile)
         return;
     }
 
-    std::vector<VarConfig> vars = {
-        // Variable binning - edges stored directly
-        VarConfig("pt", {0.0, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0, 4.0, 6.0, 8.0, 12.0, 20.0, 50.0}),
-        VarConfig("chi2", {0, 1, 2, 5, 10, 20, 50, 100}),
-        // Fixed binning
-        VarConfig("nClusters", {0, 1, 2, 3, 4, 5, 7, 10, 15, 20}),
-        VarConfig("phi", 36, -TMath::Pi(), TMath::Pi()),
-        VarConfig("eta", 11, -3.6, -2.5) // -3.6 to -2.5 with 11 bins
-    };
 
-    // ——— 2-D variable pairs to plot ———
-    std::vector<std::pair<std::string, std::string>> varPairs = {
-        {"pt", "phi"},        // kinematic azimuthal scan
-        {"eta", "phi"},       // acceptance vs φ
-        {"pt", "nClusters"},  // track-quality vs pT
-        {"pt", "chi2"},       // fit‐quality vs pT
-        {"eta", "nClusters"}, // QC vs η
-        {"eta", "chi2"}       // QC vs η
-    };
+
+
+std::vector<std::pair<std::string,std::string>> varPairs = {
+    {"pt_MCH","chi2_match"},
+    {"pt_MCH","chi2_MCH"},
+    {"pt_MCH","chi2_MFT"},
+    {"pt_MCH","nClusters_MFT"},
+    {"eta","chi2_match"},
+    {"eta","nClusters_MFT"}
+};
+
+std::vector<VarConfig> vars = {
+  VarConfig("pt_MCH",       {0.0,0.05,0.1,0.2,0.5,1.0,2.0,4.0,6.0,8.0,12.0,20.0,50.0}),
+  VarConfig("chi2_MCH",     {0.0,0.25,0.5,0.8,1.2,1.6,2.0,3.0,5.0,8.0,12.0,20.0,35.0,50.0}),
+  VarConfig("chi2_MFT",     {0.0,0.25,0.5,0.8,1.2,1.6,2.0,3.0,5.0,8.0,12.0,20.0,35.0,50.0}),
+  VarConfig("chi2_match",   {0.0,0.5,1.0,1.5,2.0,3.0,5.0,10.0,20.0,50.0,100.0}),
+  VarConfig("nClusters_MFT",{0,6,10,14,18,24}),              // [0–6), [6–10), …, [18–24)
+  VarConfig("phi",           36, -TMath::Pi(), TMath::Pi()),
+  VarConfig("eta",           11, -3.6, -2.5)
+};
+
+
 
     // Book one EffPurityHists2D per pair
     std::vector<EffPurityHists2D> hists2DSets;
@@ -121,7 +132,10 @@ void O2fwdtrack::CalculateEfficiencyPurity(TFile *outfile)
     FillEfficiencyPurityCounts(bestMatches, vars, histSets, varPairs, hists2DSets, nTotalType3, nMatchedType3, nTotalType0, nTrueType0);
 
     // Report results and optimize
-    ReportAndOptimize(outfile, vars, histSets, nTotalType3, nMatchedType3, nTotalType0, nTrueType0, hChi2Optimization);
+
+ReportAndOptimize(outfile, vars, histSets,
+                  nTotalType3, nMatchedType3, nTotalType0, nTrueType0,
+                  hChi2Optimization, matchCandidates);
 
     // calling 2D Processing
     Graphing2D(outfile, varPairs, hists2DSets);
@@ -181,7 +195,8 @@ void O2fwdtrack::CreateEfficiencyPurityHistograms(TFile *outfile, const std::vec
 
         histSets.push_back({hEffDen, hEffNum, hPurityTrue, hPurityTotal});
     }
-    hChi2Optimization = new TH1D("hChi2Optimization", "Optimal #chi^{2} threshold; #chi^{2} threshold; Efficiency #times Purity", 50, 0, 100);
+    hChi2Optimization = new TH1D("hChi2Optimization", 
+                "Optimization vs #chi^{2} threshold; #chi^{2} threshold; Efficiency #times Purity", 50, 0.5, 50.5);
     hChi2Optimization->SetDirectory(outfile);
 }
 
@@ -192,24 +207,36 @@ void O2fwdtrack::CollectMatchCandidates(std::unordered_map<Long64_t, std::vector
     {
         GetEntry(ientry);
 
-        if (fTrackType != 0)
-            continue;
-        if (fChi2MatchMCHMFT < 0 || fChi2MatchMCHMFT > fChi2Threshold)
-            continue;
+        if (fTrackType != 0)      continue;
+
+        if (fChi2MatchMCHMFT < 0) continue;
 
         double eta = std::asinh(fTgl);
         if (!IsInAcceptance(eta))
             continue;
 
+
         Long64_t mchIndex = fIndexFwdTracks_MatchMCHTrack;
         if (mchIndex < 0)
             continue;
 
+        UInt_t mftCl = 0;
+        if (fIndexMFTTracks >= 0 && fMFTTree) {
+          fMFTTree->GetEntry(fIndexMFTTracks);
+          mftCl = getMFTClusterCount(fMFTClusterSizesAndFlags);
+        }
+
         fMCLabelTree->GetEntry(ientry);
-        matchCandidates[mchIndex].push_back({ientry,
-                                             fChi2MatchMCHMFT,
-                                             fMcMask,
-                                             eta});
+
+        // record mftIndex so we can read its χ² later if needed
+        matchCandidates[mchIndex].push_back({
+                ientry,
+                fChi2MatchMCHMFT,
+                fMcMask,
+                eta,
+                fIndexMFTTracks,
+                mftCl
+        });
     }
 }
 
@@ -235,6 +262,7 @@ void O2fwdtrack::SelectBestMatches(const std::unordered_map<Long64_t, std::vecto
     }
 }
 
+
 void O2fwdtrack::FillEfficiencyPurityCounts(
     const std::unordered_map<Long64_t, const MatchCandidate *> &bestMatches,
     const std::vector<VarConfig> &vars,
@@ -247,142 +275,192 @@ void O2fwdtrack::FillEfficiencyPurityCounts(
     Long64_t &nTrueType0)
 {
     Long64_t nEntries = fChain->GetEntries();
-    for (Long64_t ientry = 0; ientry < nEntries; ientry++)
-    {
-        GetEntry(ientry);
-        fMCLabelTree->GetEntry(ientry);
+ for (Long64_t ientry = 0; ientry < nEntries; ++ientry) {
+     GetEntry(ientry);
+     fMCLabelTree->GetEntry(ientry);
+    
+     double ptMCH     = 1.0 / std::abs(fSigned1Pt);
+     double eta       = std::asinh(fTgl);
+     double phi       = fPhi;
+     double chi2MCH   = fChi2;
+     double chi2Match = fChi2MatchMCHMFT;
+    
+     if (!IsInAcceptance(eta)) continue;
+    
+     // MFT info (only meaningful for global muons)
+     bool   hasMFTData = false;
+     UInt_t mftClusterCount = 0;
+     double chi2MFT = -1.0;
+     if (fTrackType == 0 && fIndexMFTTracks >= 0 && fMFTTree) {
+         fMFTTree->GetEntry(fIndexMFTTracks);
+         chi2MFT = fMFTTrackChi2;
+         mftClusterCount = getMFTClusterCount(fMFTClusterSizesAndFlags);
+         hasMFTData = true;
+     }
+     double nClMCH = static_cast<double>(fNClusters);
+     double nClMFT = hasMFTData ? static_cast<double>(mftClusterCount) : -1.0;
 
-        double pT = 1. / std::abs(fSigned1Pt);
-        double eta = std::asinh(fTgl);
-        double phi = fPhi;
+    // Get variable values
+    std::vector<double> values;
+    for (const auto &var : vars)
+        {
+            if      (var.name == "pt_MCH")        values.push_back(ptMCH);
+            else if (var.name == "eta")           values.push_back(eta);
+            else if (var.name == "phi")           values.push_back(phi);
+            else if (var.name == "chi2_MCH")      values.push_back(chi2MCH);
+            else if (var.name == "chi2_match")    values.push_back(chi2Match);
+            else if (var.name == "chi2_MFT")      
+                { if (chi2MFT >= 0) values.push_back(chi2MFT); else values.push_back(-1); }
+            else if (var.name == "nClusters_MFT") 
+                { if (nClMFT  >= 0) values.push_back(nClMFT);  else values.push_back(-1); }
+        }
+// ------- Efficiency (denominator = true MCH in acceptance) -------
+if (fTrackType == 3) {
+    nTotalType3++;
 
-        if (!IsInAcceptance(eta))
+    // Denominator for MCH-based axes
+    for (size_t i = 0; i < vars.size(); ++i) {
+        const auto& name = vars[i].name;
+        double val = 0.0;
+
+        // MCH-only variables: always defined for truth
+        if      (name == "pt_MCH")        { val = ptMCH;   histSets[i].hEffDen->Fill(val); continue; }
+        else if (name == "eta")           { val = eta;     histSets[i].hEffDen->Fill(val); continue; }
+        else if (name == "phi")           { val = phi;     histSets[i].hEffDen->Fill(val); continue; }
+        else if (name == "chi2_MCH")      { val = chi2MCH; histSets[i].hEffDen->Fill(val); continue; }
+        else if (name == "nClusters_MCH") { val = nClMCH;  histSets[i].hEffDen->Fill(val); continue; }
+
+        // MFT-based axes: use the best match (truth or background) to define the value
+        else if (name == "chi2_MFT" || name == "nClusters_MFT") {
+            auto bm = bestMatches.find(ientry);
+            if (bm != bestMatches.end()) {
+                if (name == "chi2_MFT") {
+                    if (fMFTTree && bm->second->mftIndex >= 0) {
+                        fMFTTree->GetEntry(bm->second->mftIndex);
+                        val = fMFTTrackChi2;
+                        histSets[i].hEffDen->Fill(val);
+                    }
+                } else { // nClusters_MFT
+                    val = static_cast<double>(bm->second->mftClusters);
+                    histSets[i].hEffDen->Fill(val);
+                }
+            }
             continue;
-
-        // Initialize cluster variables
-        UInt_t clusterValue = fNClusters;
-        UInt_t mftClusterCount = 0;
-        bool hasMFTData = false;
-
-        // Handle MFT clusters for global muons
-        if (fTrackType == 0 && fIndexMFTTracks >= 0 && fMFTTree)
-        {
-            fMFTTree->GetEntry(fIndexMFTTracks);
-            mftClusterCount = getMFTClusterCount(fMFTClusterSizesAndFlags);
-            hasMFTData = true;
         }
+        // other variables (e.g. chi2_match) have no meaning for the denom here
+    }
 
-        // Get variable values
-        std::vector<double> values;
-        for (const auto &var : vars)
-        {
-            if (var.name == "pt")
-            {
-                values.push_back(pT);
-            }
-            else if (var.name == "chi2")
-            {
-                values.push_back(fChi2);
-            }
-            else if (var.name == "nClusters")
-            {
-                // Use combined clusters for global muons with MFT data
-                if (fTrackType == 0 && hasMFTData)
-                {
-                    values.push_back(fNClusters + mftClusterCount);
+    // Numerator: only if the best match is TRUE (mcMask==0)
+    auto matchIt = bestMatches.find(ientry);
+    if (matchIt != bestMatches.end() && matchIt->second->mcMask == 0) {
+        nMatchedType3++;
+
+        for (size_t i = 0; i < vars.size(); ++i) {
+            const auto& name = vars[i].name;
+            double val = 0.0;
+
+            if      (name == "pt_MCH")        { val = ptMCH;   histSets[i].hEffNum->Fill(val); continue; }
+            else if (name == "eta")           { val = eta;     histSets[i].hEffNum->Fill(val); continue; }
+            else if (name == "phi")           { val = phi;     histSets[i].hEffNum->Fill(val); continue; }
+            else if (name == "chi2_MCH")      { val = chi2MCH; histSets[i].hEffNum->Fill(val); continue; }
+            else if (name == "nClusters_MCH") { val = nClMCH;  histSets[i].hEffNum->Fill(val); continue; }
+
+            // MFT-based numerator from the (true) best match
+            else if (name == "chi2_MFT") {
+                if (fMFTTree && matchIt->second->mftIndex >= 0) {
+                    fMFTTree->GetEntry(matchIt->second->mftIndex);
+                    val = fMFTTrackChi2;
+                    histSets[i].hEffNum->Fill(val);
                 }
-                else
-                {
-                    values.push_back(clusterValue);
-                }
-            }
-            else if (var.name == "phi")
-            {
-                values.push_back(fPhi);
-            }
-            else if (var.name == "eta")
-            {
-                values.push_back(std::asinh(fTgl));
-            }
-            else
-            {
-                std::cerr << "Unknown variable: " << var.name << std::endl;
-                values.push_back(0); // Default value for unknown variables
-            }
-        }
-
-        // Efficiency calculation
-        if (fTrackType == 3)
-        {
-            nTotalType3++;
-            for (size_t i = 0; i < vars.size(); i++)
-            {
-                histSets[i].hEffDen->Fill(values[i]);
-            }
-
-            auto matchIt = bestMatches.find(ientry);
-            if (matchIt != bestMatches.end() && matchIt->second->mcMask == 0)
-            {
-                nMatchedType3++;
-                for (size_t i = 0; i < vars.size(); i++)
-                {
-                    histSets[i].hEffNum->Fill(values[i]);
-                }
-            }
-        }
-
-        // Purity calculation
-        if (fTrackType == 0)
-        {
-            nTotalType0++;
-            for (size_t i = 0; i < vars.size(); i++)
-            {
-                histSets[i].hPurityTotal->Fill(values[i]);
-                if (fMcMask == 0)
-                {
-                    histSets[i].hPurityTrue->Fill(values[i]);
-                }
-            }
-            if (fMcMask == 0)
-                nTrueType0++;
-        }
-
-        //  2-D maps for every booked pair
-        for (size_t ip = 0; ip < hists2DSets.size(); ++ip)
-        {
-            auto &h2 = hists2DSets[ip];
-            auto pr = varPairs[ip];
-
-            double x = GetVarValue(pr.first);
-            double y = GetVarValue(pr.second);
-
-            // always recompute these per-entry
-            double pT = 1. / std::abs(fSigned1Pt);
-            double eta = std::asinh(fTgl);
-            double phi = fPhi;
-
-            // Efficiency (MC true tracks)
-            if (fTrackType == 3)
-            {
-                h2.hEffDen->Fill(x, y);
-                auto mIt = bestMatches.find(ientry);
-                if (mIt != bestMatches.end() && mIt->second->mcMask == 0)
-                {
-                    h2.hEffNum->Fill(x, y);
-                }
-            }
-            if (fTrackType == 0)
-            {
-                h2.hPurityTotal->Fill(x, y);
-                if (fMcMask == 0)
-                {
-                    h2.hPurityTrue->Fill(x, y);
-                }
+            } else if (name == "nClusters_MFT") {
+                val = static_cast<double>(matchIt->second->mftClusters);
+                histSets[i].hEffNum->Fill(val);
             }
         }
     }
 }
 
+
+ // ---------------- Purity (type 0, gated by selection) ----------------
+    if (fTrackType == 0) {
+        if (chi2Match < 0 || chi2Match > fChi2Threshold) continue;
+
+        nTotalType0++;
+        for (size_t i = 0; i < vars.size(); ++i) {
+            const auto& name = vars[i].name;
+            double val = 0.0;
+            if      (name == "pt_MCH")        val = ptMCH;
+            else if (name == "eta")           val = eta;
+            else if (name == "phi")           val = phi;
+            else if (name == "chi2_MCH")      val = chi2MCH;
+            else if (name == "nClusters_MCH") val = nClMCH;
+            else if (name == "chi2_MFT")      { if (chi2MFT < 0) continue; val = chi2MFT; }
+            else if (name == "nClusters_MFT") { if (nClMFT  < 0) continue; val = nClMFT;  }
+            else if (name == "chi2_match")    val = chi2Match;
+            else                              continue;
+
+            histSets[i].hPurityTotal->Fill(val);
+            if (fMcMask == 0) histSets[i].hPurityTrue->Fill(val);
+        }
+        if (fMcMask == 0) nTrueType0++;
+    }
+    //  2-D maps for every booked pair
+//  2-D maps for every booked pair
+for (size_t ip = 0; ip < hists2DSets.size(); ++ip) {
+    auto &h2 = hists2DSets[ip];
+    const auto &pr = varPairs[ip];
+
+    auto get2D = [&](const std::string &var) -> double {
+        if      (var == "pt_MCH")        return ptMCH;
+        else if (var == "eta")           return eta;
+        else if (var == "phi")           return phi;
+        else if (var == "chi2_MCH")      return chi2MCH;
+        else if (var == "chi2_match")    return chi2Match;
+
+        // MFT-based variables: derive from context
+        else if (var == "chi2_MFT") {
+            if (fTrackType == 0) return (chi2MFT >= 0 ? chi2MFT : std::numeric_limits<double>::quiet_NaN());
+            auto bm = bestMatches.find(ientry);
+            if (bm != bestMatches.end() && fMFTTree && bm->second->mftIndex >= 0) {
+                fMFTTree->GetEntry(bm->second->mftIndex);
+                return fMFTTrackChi2;
+            }
+            return std::numeric_limits<double>::quiet_NaN();
+        } else if (var == "nClusters_MFT") {
+            if (fTrackType == 0) return (nClMFT >= 0 ? nClMFT : std::numeric_limits<double>::quiet_NaN());
+            auto bm = bestMatches.find(ientry);
+            if (bm != bestMatches.end()) {
+                return static_cast<double>(bm->second->mftClusters);
+            }
+            return std::numeric_limits<double>::quiet_NaN();
+        }
+
+        // fallback
+        return GetVarValue(var);
+    };
+
+    const double x = get2D(pr.first);
+    const double y = get2D(pr.second);
+    const bool valid = !(std::isnan(x) || std::isnan(y));
+
+    // Efficiency 2D (denominator NOT gated)
+    if (fTrackType == 3 && valid) {
+        h2.hEffDen->Fill(x, y);
+        auto mIt = bestMatches.find(ientry);
+        if (mIt != bestMatches.end() && mIt->second->mcMask == 0) {
+            h2.hEffNum->Fill(x, y);
+        }
+    }
+
+    // Purity 2D (gated by selection)
+    if (fTrackType == 0 && (chi2Match >= 0 && chi2Match <= fChi2Threshold) && valid) {
+        h2.hPurityTotal->Fill(x, y);
+        if (fMcMask == 0) h2.hPurityTrue->Fill(x, y);
+    }
+}
+
+}
+}
 void O2fwdtrack::Create2DEffPurHists(
     TFile *outfile,
     const std::vector<std::pair<std::string, std::string>> &varPairs,
