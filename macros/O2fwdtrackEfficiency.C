@@ -85,7 +85,6 @@ void O2fwdtrack::CalculateEfficiencyPurity(TFile *outfile)
 
 
 
-
 std::vector<std::pair<std::string,std::string>> varPairs = {
     {"pt_MCH","chi2_match"},
     {"pt_MCH","chi2_MCH"},

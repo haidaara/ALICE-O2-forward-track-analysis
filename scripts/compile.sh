@@ -12,4 +12,3 @@ root -l -b  << EOF
 
 .q
 EOF
-

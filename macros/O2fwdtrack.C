@@ -25,7 +25,6 @@ void O2fwdtrack::Loop(TFile *outputfile)
     bool closeFile = false;
 
 
-
     TFile *outfile = outputManagement(outputfile, closeFile);
 
     std::vector<std::string> branches = {"fX", "fY", "fZ", "fPhi", "fTgl", "fSigned1Pt", "fChi2",
