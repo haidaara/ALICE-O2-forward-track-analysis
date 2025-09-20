@@ -5,6 +5,7 @@
 *_rdict.pcm
 *.rootmap
 *.pcm
+*.h
 
 # Ignore all output images
 output/*.png
