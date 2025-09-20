@@ -1,0 +1,276 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global/global}
+    \entry{ALICE_DetectorFig}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=a81f9326c1a6bbf38e023dc8710bfd9c}{%
+           family={{ALICE Collaboration}},
+           familyi={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{fullhash}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{fullhashraw}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{bibnamehash}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{authorbibnamehash}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{authornamehash}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{authorfullhash}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{authorfullhashraw}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \field{extraname}{1}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2025-09-20}
+      \field{title}{ALICE Detector Overview}
+      \field{year}{2022}
+      \verb{urlraw}
+      \verb https://alice-collaboration.web.cern.ch/sites/default/files/Documents/20220705_ALICE_LS2_zoom_v2.5MQ.png
+      \endverb
+      \verb{url}
+      \verb https://alice-collaboration.web.cern.ch/sites/default/files/Documents/20220705_ALICE_LS2_zoom_v2.5MQ.png
+      \endverb
+    \endentry
+    \entry{ALICE_MFT_TDR_2015}{report}{}{}
+      \list{institution}{1}{%
+        {CERN}%
+      }
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labeltitlesource}{title}
+      \field{note}{ALICE Collaboration}
+      \field{number}{ALICE-TDR-018}
+      \field{title}{Technical Design Report for the Muon Forward Tracker (MFT)}
+      \field{type}{techreport}
+      \field{year}{2015}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://cds.cern.ch/record/1981898/files/ALICE-TDR-018.pdf
+      \endverb
+      \verb{url}
+      \verb https://cds.cern.ch/record/1981898/files/ALICE-TDR-018.pdf
+      \endverb
+    \endentry
+    \entry{ALICE_Muon_Spectrometer}{misc}{}{}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://alice-collaboration.web.cern.ch/menu_proj_items/Muon-Spect}}
+      \field{note}{Acceptance $2.5 \le \eta \le 4.0$ and performance overview}
+      \field{title}{ALICE Muon Spectrometer}
+      \field{year}{accessed 2025}
+      \true{nocite}
+    \endentry
+    \entry{ALICE_O2_AF}{misc}{}{}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://aliceo2group.github.io/analysis-framework/}}
+      \field{note}{Tables, analysis tasks, Run 3 dataflow}
+      \field{title}{ALICE O$^2$ Analysis Framework Documentation}
+      \field{year}{accessed 2025}
+      \true{nocite}
+    \endentry
+    \entry{Fruehwirth1987}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=4c3042252e8d06204259c915a43511c9}{%
+           family={Frühwirth},
+           familyi={F\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{4c3042252e8d06204259c915a43511c9}
+      \strng{fullhash}{4c3042252e8d06204259c915a43511c9}
+      \strng{fullhashraw}{4c3042252e8d06204259c915a43511c9}
+      \strng{bibnamehash}{4c3042252e8d06204259c915a43511c9}
+      \strng{authorbibnamehash}{4c3042252e8d06204259c915a43511c9}
+      \strng{authornamehash}{4c3042252e8d06204259c915a43511c9}
+      \strng{authorfullhash}{4c3042252e8d06204259c915a43511c9}
+      \strng{authorfullhashraw}{4c3042252e8d06204259c915a43511c9}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nucl. Instrum. Meth. A}
+      \field{title}{Application of Kalman filtering to track and vertex fitting}
+      \field{volume}{262}
+      \field{year}{1987}
+      \true{nocite}
+      \field{pages}{444\bibrangedash 450}
+      \range{pages}{7}
+      \verb{doi}
+      \verb 10.1016/0168-9002(87)90887-4
+      \endverb
+      \verb{urlraw}
+      \verb https://ui.adsabs.harvard.edu/abs/1987NIMPA.262..444F
+      \endverb
+      \verb{url}
+      \verb https://ui.adsabs.harvard.edu/abs/1987NIMPA.262..444F
+      \endverb
+    \endentry
+    \entry{PDG_Passage_2022}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=4eea7085eaa05715b19a05077bd8a97c}{%
+           family={{Particle Data Group}},
+           familyi={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{4eea7085eaa05715b19a05077bd8a97c}
+      \strng{fullhash}{4eea7085eaa05715b19a05077bd8a97c}
+      \strng{fullhashraw}{4eea7085eaa05715b19a05077bd8a97c}
+      \strng{bibnamehash}{4eea7085eaa05715b19a05077bd8a97c}
+      \strng{authorbibnamehash}{4eea7085eaa05715b19a05077bd8a97c}
+      \strng{authornamehash}{4eea7085eaa05715b19a05077bd8a97c}
+      \strng{authorfullhash}{4eea7085eaa05715b19a05077bd8a97c}
+      \strng{authorfullhashraw}{4eea7085eaa05715b19a05077bd8a97c}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://pdg.lbl.gov/2022/reviews/rpp2022-rev-passage-particles-matter.pdf}}
+      \field{title}{Passage of Particles Through Matter (Review of Particle Physics, 2022 update)}
+      \field{year}{2022}
+      \true{nocite}
+    \endentry
+    \entry{ROOT_TEfficiency}{manual}{}{}
+      \list{organization}{1}{%
+        {CERN}%
+      }
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{note}{Binomial efficiencies and confidence intervals}
+      \field{title}{ROOT \texttt{TEfficiency} Class Reference}
+      \field{year}{accessed 2025}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://root.cern.ch/doc/master/classTEfficiency.html
+      \endverb
+      \verb{url}
+      \verb https://root.cern.ch/doc/master/classTEfficiency.html
+      \endverb
+    \endentry
+    \entry{Fawcett2006}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=9c15aa0b2a7683cefeaa12c991d0b1c2}{%
+           family={Fawcett},
+           familyi={F\bibinitperiod},
+           given={Tom},
+           giveni={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{9c15aa0b2a7683cefeaa12c991d0b1c2}
+      \strng{fullhash}{9c15aa0b2a7683cefeaa12c991d0b1c2}
+      \strng{fullhashraw}{9c15aa0b2a7683cefeaa12c991d0b1c2}
+      \strng{bibnamehash}{9c15aa0b2a7683cefeaa12c991d0b1c2}
+      \strng{authorbibnamehash}{9c15aa0b2a7683cefeaa12c991d0b1c2}
+      \strng{authornamehash}{9c15aa0b2a7683cefeaa12c991d0b1c2}
+      \strng{authorfullhash}{9c15aa0b2a7683cefeaa12c991d0b1c2}
+      \strng{authorfullhashraw}{9c15aa0b2a7683cefeaa12c991d0b1c2}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Pattern Recognition Letters}
+      \field{number}{8}
+      \field{title}{An introduction to ROC analysis}
+      \field{volume}{27}
+      \field{year}{2006}
+      \true{nocite}
+      \field{pages}{861\bibrangedash 874}
+      \range{pages}{14}
+      \verb{doi}
+      \verb 10.1016/j.patrec.2005.10.010
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S016786550500303X
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S016786550500303X
+      \endverb
+    \endentry
+    \entry{ALICE_MFT_Documentation}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=a81f9326c1a6bbf38e023dc8710bfd9c}{%
+           family={{ALICE Collaboration}},
+           familyi={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{fullhash}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{fullhashraw}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{bibnamehash}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{authorbibnamehash}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{authornamehash}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{authorfullhash}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{authorfullhashraw}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \field{extraname}{2}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{MFT Reference Documentation}
+      \field{urlday}{8}
+      \field{urlmonth}{11}
+      \field{urlyear}{2023}
+      \field{year}{2023}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://aliceo2group.github.io/docs/d8/d9d/refMFT.html
+      \endverb
+      \verb{url}
+      \verb https://aliceo2group.github.io/docs/d8/d9d/refMFT.html
+      \endverb
+    \endentry
+    \entry{ALICE_AnalysisFramework_Tables}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=a81f9326c1a6bbf38e023dc8710bfd9c}{%
+           family={{ALICE Collaboration}},
+           familyi={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{fullhash}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{fullhashraw}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{bibnamehash}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{authorbibnamehash}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{authornamehash}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{authorfullhash}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \strng{authorfullhashraw}{a81f9326c1a6bbf38e023dc8710bfd9c}
+      \field{extraname}{3}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Analysis Framework Helper Task Tables}
+      \field{urlday}{8}
+      \field{urlmonth}{11}
+      \field{urlyear}{2023}
+      \field{year}{2023}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://aliceo2group.github.io/analysis-framework/docs/datamodel/helperTaskTables
+      \endverb
+      \verb{url}
+      \verb https://aliceo2group.github.io/analysis-framework/docs/datamodel/helperTaskTables
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

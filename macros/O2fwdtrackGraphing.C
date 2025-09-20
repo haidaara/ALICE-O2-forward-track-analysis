@@ -41,11 +41,6 @@ static inline bool isDiscreteVar(const std::string& n) {
 }
 
 
-static inline bool isDiscreteVar(const std::string& n) {
-  return n.rfind("nClusters", 0) == 0 || n == "nClusters_MCH" || n == "nClusters_MFT";
-}
-
-
 
 // O2fwdtrackGraphing.C
 // BEFORE: void ReportAndOptimize( ...
