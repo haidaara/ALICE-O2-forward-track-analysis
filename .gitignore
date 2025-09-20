@@ -2,10 +2,13 @@
 *_C.so
 *_C.d
 *_C_ACLiC_dict.*
+*_C_ACLiC_*
 *_rdict.pcm
 *.rootmap
 *.pcm
 *.h
+*.in
+*.out
 
 # Ignore all output images
 output/*.png
