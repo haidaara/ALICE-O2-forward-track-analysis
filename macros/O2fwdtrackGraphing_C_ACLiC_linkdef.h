@@ -5,6 +5,6 @@
 #pragma link C++ nestedclasses;
 #pragma link C++ nestedtypedefs;
 
-#pragma link C++ defined_in "/mnt/c/alice-fwd-matching-repo/././macros/O2fwdtrackEfficiency.C";
+#pragma link C++ defined_in "/mnt/c/alice-fwd-matching-repo/././macros/O2fwdtrackGraphing.C";
 
 #endif
